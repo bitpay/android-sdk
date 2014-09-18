@@ -1,0 +1,16 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.bitpay.sdk.android">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.NFC"/>
+
+    <application android:allowBackup="true">
+
+        <activity
+            android:name="com.bitpay.sdk.android.InvoiceActivity"
+            android:label="@string/bitpay_title_activity_invoice"
+            android:theme="@style/bitpay_BitPayInvoice">
+        </activity>
+    </application>
+
+</manifest>

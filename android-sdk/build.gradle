@@ -1,0 +1,92 @@
+apply plugin: 'android-library'
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+version = "0.1.1"
+group = "com.bitpay"
+
+configurations {
+    archives {
+        extendsFrom configurations.default
+    }
+}
+
+signing {
+    required { has("release") && gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
+}
+
+android {
+    resourcePrefix 'bitpay_'
+    compileSdkVersion 20
+    buildToolsVersion "20.0.0"
+
+    defaultConfig {
+        applicationId "com.bitpay.sdk"
+        minSdkVersion 15
+        targetSdkVersion 19
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            runProguard false
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    compile 'com.google:bitcoinj:0.11.3'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.4.2'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.2.3'
+    compile 'org.apache.httpcomponents:httpclient-android:4.3.5'
+    compile 'commons-codec:commons-codec:1.9'
+}
+
+uploadArchives {
+    configuration = configurations.archives
+    repositories.mavenDeployer {
+        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+        repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+            authentication(userName: sonatypeUsername, password: sonatypePassword)
+        }
+
+        pom.project {
+            name 'BitPay Android SDK'
+            packaging 'aar'
+            description 'An SDK to develop applications that use the BitPay API'
+            url 'https://github.com/eordano/bitpay-android-sdk'
+
+            scm {
+                url 'scm:git@github.com:eordano/bitpay-android-sdk.git'
+                connection 'scm:git@github.com:eordano/bitpay-android-sdk.git'
+                developerConnection 'scm:git@github.com:eordano/bitpay-android-sdk.git'
+            }
+
+            licenses {
+                license {
+                    name 'The MIT License'
+                    url 'http://www.opensource.org/licenses/MIT'
+                    distribution 'repo'
+                }
+            }
+
+            developers {
+                developer {
+                    id 'eordano'
+                    name 'Esteban Ordano'
+                    email 'eordano@gmail.com'
+                }
+            }
+        }
+    }
+}

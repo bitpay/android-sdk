@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bitpay_background">#17223C</color>
+    <color name="bitpay_white_background">#FFFFFF</color>
+</resources>
