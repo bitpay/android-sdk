@@ -1,5 +1,67 @@
 #! /usr/bin/env node
+/**
+*
+* BitPay API RPC Client to retrieve a vendor token for Android apps
+*
+*/
+var https = require('https');
+var bitauth = require('bitauth');
 
-var bitcore = require('./bitcore.js');
+var token = process.argv[2];
+var test = process.argv.length > 3 ? process.argv[3] : undefined;
+if (test) {
+  if (token === '--test') {
+    var c = token;
+    token = test;
+    test = c;
+  }
+}
+if (!token) {
+  console.log('Pleace specify a token to pair with');
+  process.exit(0);
+}
 
+var private_key = bitauth.generateSin().priv;
+var public_key = bitauth.getPublicKeyFromPrivateKey(private_key);
+var sin = bitauth.getSinFromPublicKey(public_key);
 
+var guid = (new Date()).getTime();
+var url = 'https://' + 'bitpay.com/tokens';
+var data = JSON.stringify({
+  guid: Math.floor(guid%1e5) + '',
+  id: sin,
+  pairingCode: token,
+  nonce: guid
+});
+var options = {
+  hostname: (test ? 'test.' : '') + 'bitpay.com',
+  port: 443,
+  path: '/tokens',
+  method: 'POST',
+  headers: {
+    "x-accept-version": "2.0.0",
+    "x-bitpay-plugin-info": "BitPay Android Client",
+    "content-type": "application/json",
+    "accept": "application/json"
+  }
+};
+
+var req = https.request(options, function(res) {
+  res.setEncoding('utf8');
+  res.on('data', function (chunk) {
+    var body = JSON.parse(chunk);
+    if (body.error) {
+      console.log(body.error);
+    } else {
+      console.log("Successfully paired. Your client key is " + private_key);
+    }
+  });
+});
+
+req.on('error', function(e) {
+  console.log('problem with request: ' + e.message);
+});
+
+// write data to request body
+req.write(data);
+req.end();

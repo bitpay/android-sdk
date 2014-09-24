@@ -50,6 +50,7 @@ Go to [*My Account* > *API Tokens*](https://bitpay.com/api-tokens) section. Unde
 Open the bin folder and excecute the pairing utility using the created token.
 ```bash
     $ cd bin
+    $ npm install bitauth
     $ ./createClientKey <pairing code, 7 letters>
     Your client key is:
     70163c90f18df866d7a4ec3b8f7215f0013e3f81749f6222938a1f4d9ce3e97e
