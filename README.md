@@ -43,7 +43,7 @@ A `.aar` library is provided in the `dist` folder, so you can include it in your
 ### 1. Create a Bitpay Account
 Please go to https://bitpay.com to create an account.
 
-### 2. Generate an Application Key
+### 2. Generate an Application Token
 
 Go to [*My Account* > *API Tokens*](https://bitpay.com/api-tokens) section. Under *Tokens* create a new token with label `mobile` and facade `Point-of-Sale`.
 
@@ -51,23 +51,22 @@ Open the bin folder and excecute the pairing utility using the created token.
 ```bash
     $ cd bin
     $ npm install bitauth
-    $ ./createClientKey <pairing code, 7 letters>
-    Your client key is:
-    70163c90f18df866d7a4ec3b8f7215f0013e3f81749f6222938a1f4d9ce3e97e
+    $ ./getClientToken <pairing code, 7 letters>
+    Successfully paired. Your client token is: 70163c90f18df866d7a4ec3b8f7215f0013e3f81749f6222938a1f4d9ce3e97e
 ```
-This key can now be used to instantiate a Bitpay client object.
+This token can now be used to instantiate a Bitpay client object.
 
 ## Sample Code and Usage
 
 ### Creating a BitPayClient
 ```java
-String clientKey = "00000000000000000000000";
+String clientToken = "00000000000000000000000";
 new BitPayAndroid.GetBitPayClientTask() {
     @Override
     protected void onPostExecute(BitPayAndroid bitpay) {
         // ...
     }
-}.execute(clientKey);
+}.execute(clientToken);
 ```
 
 Inside the `onPostExecute` method, you can use all of the [BitPay Java SDK](https://github.com/unChaz/BitPayJavaClient)
@@ -75,8 +74,8 @@ Inside the `onPostExecute` method, you can use all of the [BitPay Java SDK](http
 
 #### Using promises
 ```java
-String clientKey = "00000000000000000000000";
-BitPayAndroid.getClient(clientKey).then(new BitpayPromiseCallback() {
+String clientToken = "00000000000000000000000";
+BitPayAndroid.getClient(clientToken).then(new BitpayPromiseCallback() {
 
     public void onSuccess(BitPayAndroid bitpay) {
         // ...
