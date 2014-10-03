@@ -38,7 +38,7 @@ public class BitPay {
     private static final String BITPAY_PLUGIN_INFO = "BitPay Java Client " + BITPAY_API_VERSION;
     private static final String BITPAY_URL = "https://bitpay.com/";
 
-    public static final String FACADE_PAYROLL  = "payroll";
+    public static final String FACADE_PAYROLL = "payroll";
     public static final String FACADE_POS = "pos";
     public static final String FACADE_MERCHANT = "merchant";
     public static final String FACADE_USER = "user";
@@ -51,40 +51,47 @@ public class BitPay {
     private boolean _disableNonce = false;
     private String _clientName = "";
     protected Hashtable<String, String> _tokenCache; // {facade, token}
-	
+
     /**
      * Constructor for use if the keys and SIN are managed by this library.
+     *
      * @param clientName - The label for this client.
-     * @param envUrl - The target server URL.
-     * @throws BitPayException 
+     * @param envUrl     - The target server URL.
+     * @throws BitPayException
      */
-    public BitPay(String clientName, String envUrl) throws BitPayException
-    {
-        if (clientName.equals(BITPAY_PLUGIN_INFO))
-        {
+    public BitPay(String clientName, String envUrl) throws BitPayException {
+        if (clientName.equals(BITPAY_PLUGIN_INFO)) {
             try {
-				clientName += " on " + java.net.InetAddress.getLocalHost();
-			} catch (UnknownHostException e) {
-				clientName += " on unknown host";
-			}
+                clientName += " on " + java.net.InetAddress.getLocalHost();
+            } catch (UnknownHostException e) {
+                clientName += " on unknown host";
+            }
         }
         _clientName = clientName;
 
         _baseUrl = envUrl;
-	    _httpClient = new DefaultHttpClient();
+        _httpClient = new DefaultHttpClient();
 
-        try {
-			this.initKeys();
-		} catch (IOException e) {
-			throw new BitPayException("Error: failed to intialize public/private key pair\n" + e.getMessage());
-		}
+        this.initKeys();
         this.deriveIdentity();
         this.tryGetAccessTokens();
     }
-    
-    public BitPay(String clientName) throws BitPayException
-    {
-    	this(clientName, BITPAY_URL);
+
+    public BitPay(String clientName) throws BitPayException {
+        this(clientName, BITPAY_URL);
+    }
+
+    public BitPay(Token token, String url) {
+        _clientName = "Android Authorized Client";
+
+        _baseUrl = url;
+        _httpClient = new DefaultHttpClient();
+
+        this.initKeys();
+        this.deriveIdentity();
+
+        _tokenCache = new Hashtable<String, String>();
+        _tokenCache.put(token.getFacade(), token.getValue());
     }
     
     public BitPay() throws BitPayException
@@ -198,7 +205,6 @@ public class BitPay {
     {
         invoice.setToken(this.getAccessToken(facade));
         invoice.setGuid(this.getGuid());
-        invoice.setNonce(this.getNextNonce());
         
         ObjectMapper mapper = new ObjectMapper();
         String json;
@@ -208,7 +214,7 @@ public class BitPay {
 			throw new BitPayException("Error - failed to serialize Invoice object : " + e.getMessage());
 		}
 		
-        HttpResponse response = this.postWithSignature("invoices", json);        
+        HttpResponse response = this.post("invoices", json, false);
         
 		try {
         	invoice = mapper.readValue(this.responseToJsonString(response), InvoiceWrapper.class).data;
@@ -273,7 +279,7 @@ public class BitPay {
         return new Rates(rates);
     }
     
-    private void initKeys() throws IOException
+    private void initKeys()
     {
         _ecKey = KeyUtils.createEcKey();
     }

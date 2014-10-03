@@ -51,9 +51,9 @@ var req = https.request(options, function(res) {
   res.on('data', function (chunk) {
     var body = JSON.parse(chunk);
     if (body.error) {
-      console.log(body.error);
+      console.log(chunk);
     } else {
-      console.log("Successfully paired. Your client token is " + private_key);
+      console.log("Successfully paired. Your client token is " + body.data[0].token);
     }
   });
 });

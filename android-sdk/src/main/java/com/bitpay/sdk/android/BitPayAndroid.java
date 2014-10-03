@@ -35,8 +35,13 @@ public class BitPayAndroid extends BitPay {
     public BitPayAndroid(ECKey ecKey, String clientName, String envUrl) throws BitPayException {
         super(ecKey, clientName, envUrl);
     }
+
     public BitPayAndroid(String clientName, String envUrl) throws BitPayException {
         super(clientName, envUrl);
+    }
+
+    public BitPayAndroid(Token token, String envUrl) {
+        super(token, envUrl);
     }
     public BitPayAndroid(String clientName) throws BitPayException {
         super(clientName);
@@ -162,10 +167,17 @@ public class BitPayAndroid extends BitPay {
     }
 
     public static BitpayPromise<BitPayAndroid> getClient(final String privateKey) {
+        return getClient(privateKey, AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    public static BitpayPromise<BitPayAndroid> withToken(final String token, final String serverUrl) {
+        return withToken(token, serverUrl, AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+    public static BitpayPromise<BitPayAndroid> withToken(final String token, final String serverUrl, final Executor executor) {
         return new BitpayPromise<BitPayAndroid>() {
             @Override
             public void then(final PromiseCallback<BitPayAndroid> callback) {
-                new GetClientTask(){
+                new GetClientWithTokenTask(){
                     @Override
                     protected void onPostExecute(BitPayAndroid bitPayAndroid) {
                         if (bitPayAndroid == null) {
@@ -174,7 +186,7 @@ public class BitPayAndroid extends BitPay {
                             callback.onSuccess(bitPayAndroid);
                         }
                     }
-                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, privateKey);
+                }.executeOnExecutor(executor, token, serverUrl);
             }
         };
     }
@@ -295,6 +307,21 @@ public class BitPayAndroid extends BitPay {
                 this.error = e;
                 return null;
             }
+        }
+    }
+
+    public static class GetClientWithTokenTask extends AsyncTask<String, Void, BitPayAndroid> {
+        protected BitPayException error;
+
+        @Override
+        protected final BitPayAndroid doInBackground(String... params) {
+            String tokenStr = params[0];
+            Token token = new Token();
+            token.setFacade("pos");
+            token.setId(tokenStr);
+            String url = params.length > 1? params[1] : null;
+            BitPayAndroid client = new BitPayAndroid(token, url == null ? "https://test.bitpay.com/" : url);
+            return client;
         }
     }
 
