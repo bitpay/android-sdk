@@ -13,7 +13,15 @@ to the build system you're using.
 If you're using Android Studio or gradle to build your app, add the following
 to your `build.gradle` file:
 
-    compile 'com.bitpay:sdk-android:0.1.1@aar'
+    compile 'com.bitpay:sdk-android:0.2.1@aar'
+
+Additionaly, you'll have to specify these dependencies (soon to be bundled together with the sdk):
+
+    compile 'com.google:bitcoinj:0.11.3'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.4.2'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.2.3'
+    compile 'org.apache.httpcomponents:httpclient-android:4.3.5'
+    compile 'commons-codec:commons-codec:1.9'
 
 Remember to add the maven central repository at the beginning of the file:
 
@@ -29,7 +37,7 @@ If you're using maven, add the following dependency:
 <dependency>
   <groupId>com.bitpay</groupId>
   <artifactId>sdk-android</artifactId>
-  <version>0.1.1</version>
+  <version>0.2.1</version>
   <packaging>aar</packaging>
 </dependency>
 ```
@@ -45,7 +53,7 @@ Please go to https://bitpay.com to create an account.
 
 ### 2. Generate an Application Token
 
-Go to [*My Account* > *API Tokens*](https://bitpay.com/api-tokens) section. Under *Tokens* create a new token with label `mobile` and facade `Point-of-Sale`.
+Go to [*My Account* > *API Tokens*](https://bitpay.com/api-tokens) section. Click on the _Add New Token_ button and make a token with the `Point-of-Sale` capability for multiple clients. You can then include this token with your application.
 
 Open the bin folder and excecute the pairing utility using the created token.
 ```bash
@@ -61,7 +69,7 @@ This token can now be used to instantiate a Bitpay client object.
 ### Creating a BitPayClient
 ```java
 String clientToken = "00000000000000000000000";
-new BitPayAndroid.GetBitPayClientTask() {
+new BitPayAndroid.GetClientWithTokenTask() {
     @Override
     protected void onPostExecute(BitPayAndroid bitpay) {
         // ...
@@ -75,7 +83,7 @@ Inside the `onPostExecute` method, you can use all of the [BitPay Java SDK](http
 #### Using promises
 ```java
 String clientToken = "00000000000000000000000";
-BitPayAndroid.getClient(clientToken).then(new BitpayPromiseCallback() {
+BitPayAndroid.withToken(clientToken).then(new BitpayPromiseCallback() {
 
     public void onSuccess(BitPayAndroid bitpay) {
         // ...
@@ -128,7 +136,7 @@ Take a look at [this project](https://github.com/eordano/bitpay-android-sample)
 where an integration with a mock application is shown.
 
 ### BitPay's API docs
-To read more about invoices refer to the BitPay's [API documentation](https://test.bitpay.com/downloads/bitpayApi.pdf)
+To read more about invoices refer to the BitPay's [API documentation](https://bitpay.com/api)
 
 
 ## Troubleshooting
