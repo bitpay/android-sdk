@@ -12,10 +12,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
 
-        android:paddingLeft="@dimen/bitpay_activity_horizontal_margin"
-        android:paddingRight="@dimen/bitpay_activity_horizontal_margin"
-        android:paddingTop="@dimen/bitpay_activity_vertical_margin"
-        android:paddingBottom="@dimen/bitpay_activity_vertical_margin"
         >
 
         <ImageView
@@ -31,7 +27,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/imageHolder"
-        android:padding="10dp"
         android:id="@+id/invoiceView">
 
         <ProgressBar
@@ -40,10 +35,10 @@
             android:layout_height="wrap_content"
             android:id="@+id/progressBar"
             android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
 
         <WebView
             android:layout_width="wrap_content"
