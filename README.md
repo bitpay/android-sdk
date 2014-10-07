@@ -13,7 +13,7 @@ to the build system you're using.
 If you're using Android Studio or gradle to build your app, add the following
 to your `build.gradle` file:
 
-    compile 'com.bitpay:sdk-android:0.2.1@aar'
+    compile 'com.bitpay:sdk-android:0.2.3@aar'
 
 Additionaly, you'll have to specify these dependencies (soon to be bundled together with the sdk):
 
@@ -37,7 +37,7 @@ If you're using maven, add the following dependency:
 <dependency>
   <groupId>com.bitpay</groupId>
   <artifactId>sdk-android</artifactId>
-  <version>0.2.1</version>
+  <version>0.2.3</version>
   <packaging>aar</packaging>
 </dependency>
 ```
@@ -65,6 +65,13 @@ Open the bin folder and excecute the pairing utility using the created token.
 This token can now be used to instantiate a Bitpay client object.
 
 ## Sample Code and Usage
+
+### Check if the user has a bitcoin wallet
+```java
+if (BitPayAndroid.isWalletAvailable(mContext)) {
+    // ...
+}
+```
 
 ### Creating a BitPayClient
 ```java
