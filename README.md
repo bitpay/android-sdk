@@ -102,6 +102,14 @@ BitPayAndroid.withToken(clientToken).then(new BitpayPromiseCallback() {
 });
 ```
 
+### Use the testing server
+```java
+String clientToken = "00000000000000000000000";
+BitPayAndroid.withToken(clientToken, "https://test.bitpay.com/").then(
+    // ...
+);
+```
+
 ### Creating a new invoice
 ```java
 Invoice invoice = new Invoice(200, "USD");

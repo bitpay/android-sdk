@@ -173,6 +173,11 @@ public class BitPayAndroid extends BitPay {
     public static BitpayPromise<BitPayAndroid> withToken(final String token, final String serverUrl) {
         return withToken(token, serverUrl, AsyncTask.THREAD_POOL_EXECUTOR);
     }
+
+    public static BitpayPromise<BitPayAndroid> withToken(final String token) {
+        return withToken(token, "https://bitpay.com/", AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
     public static BitpayPromise<BitPayAndroid> withToken(final String token, final String serverUrl, final Executor executor) {
         return new BitpayPromise<BitPayAndroid>() {
             @Override
