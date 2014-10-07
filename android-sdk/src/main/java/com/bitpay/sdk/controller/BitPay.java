@@ -1,5 +1,7 @@
 package com.bitpay.sdk.controller;
 
+import android.util.Log;
+
 import com.bitpay.sdk.model.Invoice;
 import com.bitpay.sdk.model.Rate;
 import com.bitpay.sdk.model.Rates;
@@ -42,6 +44,8 @@ public class BitPay {
     public static final String FACADE_POS = "pos";
     public static final String FACADE_MERCHANT = "merchant";
     public static final String FACADE_USER = "user";
+
+    static private ObjectMapper mapper = new ObjectMapper();
 
     private HttpClient _httpClient = null;
     private String _baseUrl = BITPAY_URL;
@@ -165,7 +169,6 @@ public class BitPay {
         token.setLabel(_clientName);
         token.setFacade(facade);
 
-        ObjectMapper mapper = new ObjectMapper();
         String json;
         try {
             json = mapper.writeValueAsString(token);
@@ -193,10 +196,8 @@ public class BitPay {
     }
 
     public Invoice createInvoice(Invoice invoice, String facade) throws BitPayException {
-        invoice.setToken(this.getAccessToken(facade));
         invoice.setGuid(this.getGuid());
 
-        ObjectMapper mapper = new ObjectMapper();
         String json;
         try {
             json = mapper.writeValueAsString(invoice);
@@ -204,7 +205,7 @@ public class BitPay {
             throw new BitPayException("Error - failed to serialize Invoice object : " + e.getMessage());
         }
 
-        HttpResponse response = this.post("invoices", json, false);
+        HttpResponse response = this.makeRPCpost(facade, "createInvoice", json);
 
         try {
             invoice = mapper.readValue(this.responseToJsonString(response), InvoiceWrapper.class).data;
@@ -224,7 +225,7 @@ public class BitPay {
         HttpResponse response = this.get("invoices/" + invoiceId);
         Invoice i;
         try {
-            i = new ObjectMapper().readValue(this.responseToJsonString(response), InvoiceWrapper.class).data;
+            i = mapper.readValue(this.responseToJsonString(response), InvoiceWrapper.class).data;
         } catch (JsonProcessingException e) {
             throw new BitPayException("Error - failed to deserialize BitPay server response (Invoice) : " + e.getMessage());
         } catch (IOException e) {
@@ -242,7 +243,7 @@ public class BitPay {
 
         List<Invoice> invoices;
         try {
-            invoices = new ObjectMapper().readValue(this.responseToJsonString(response), InvoicesWrapper.class).data;
+            invoices = mapper.readValue(this.responseToJsonString(response), InvoicesWrapper.class).data;
         } catch (JsonProcessingException e) {
             throw new BitPayException("Error - failed to deserialize BitPay server response (Invoices) : " + e.getMessage());
         } catch (IOException e) {
@@ -256,7 +257,7 @@ public class BitPay {
 
         List<Rate> rates;
         try {
-            rates = Arrays.asList(new ObjectMapper().readValue(this.responseToJsonString(response), RatesWrapper.class).data);
+            rates = Arrays.asList(mapper.readValue(this.responseToJsonString(response), RatesWrapper.class).data);
         } catch (JsonProcessingException e) {
             throw new BitPayException("Error - failed to deserialize BitPay server response (Rates) : " + e.getMessage());
         } catch (IOException e) {
@@ -289,7 +290,7 @@ public class BitPay {
 
         _tokenCache = new Hashtable<String, String>();
         try {
-            for (Hashtable<String, String> entry1 : new ObjectMapper().readValue(json, TokenCacheWrapper.class).data) {
+            for (Hashtable<String, String> entry1 : mapper.readValue(json, TokenCacheWrapper.class).data) {
                 _tokenCache.putAll(entry1);
             }
         } catch (JsonProcessingException e) {
@@ -325,7 +326,7 @@ public class BitPay {
     public List<Token> getTokens() throws BitPayException {
         HttpResponse response = this.get("tokens", getParams());
         try {
-            return Arrays.asList(new ObjectMapper().readValue(this.responseToJsonString(response), TokenWrapper.class).data);
+            return Arrays.asList(mapper.readValue(this.responseToJsonString(response), TokenWrapper.class).data);
         } catch (JsonProcessingException e) {
             throw new BitPayException("Error - failed to deserialize BitPay server response (Invoice) : " + e.getMessage());
         } catch (IOException e) {
@@ -420,13 +421,12 @@ public class BitPay {
 
     private HttpResponse makeRPCpost(String facade, String method, String params) throws BitPayException {
         try {
-            return post(_baseUrl + "api/" + _tokenCache.get(facade), new ObjectMapper().writeValueAsString(new RPCCall(method, params)));
-        } catch (BitPayException e) {
-            e.printStackTrace();
+            return post("api/" + _tokenCache.get(facade), new ObjectMapper().writeValueAsString(new RPCCall(method, params)));
         } catch (JsonProcessingException e) {
             throw new BitPayException("Unable to parse JSON", e);
         }
     }
+
     private class RPCCall {
         @JsonProperty
         private final String method;
@@ -471,7 +471,6 @@ public class BitPay {
 	                throw new BitPayException(message);
 		    	}
 		    }
-            rootNode.get("data");
 
 			return jsonString;
 			

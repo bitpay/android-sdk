@@ -318,7 +318,7 @@ public class BitPayAndroid extends BitPay {
             String tokenStr = params[0];
             Token token = new Token();
             token.setFacade("pos");
-            token.setId(tokenStr);
+            token.setValue(tokenStr);
             String url = params.length > 1? params[1] : null;
             BitPayAndroid client = new BitPayAndroid(token, url == null ? "https://test.bitpay.com/" : url);
             return client;
