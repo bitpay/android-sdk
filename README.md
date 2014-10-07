@@ -66,16 +66,9 @@ This token can now be used to instantiate a Bitpay client object.
 
 ## Sample Code and Usage
 
-### Check if the user has a bitcoin wallet
+### Instanciating BitPayAndroid
 ```java
-if (BitPayAndroid.isWalletAvailable(mContext)) {
-    // ...
-}
-```
-
-### Creating a BitPayClient
-```java
-String clientToken = "00000000000000000000000";
+String clientToken = "Token from the previous section";
 new BitPayAndroid.GetClientWithTokenTask() {
     @Override
     protected void onPostExecute(BitPayAndroid bitpay) {
@@ -84,8 +77,7 @@ new BitPayAndroid.GetClientWithTokenTask() {
 }.execute(clientToken);
 ```
 
-Inside the `onPostExecute` method, you can use all of the [BitPay Java SDK](https://github.com/unChaz/BitPayJavaClient)
-(the original BitPay object is accessed through `bitpay.mBitpay`).
+This class inherits from `BitPay` so you can use all the methods of the [BitPay Java SDK](https://github.com/unChaz/BitPayJavaClient).
 
 #### Using promises
 ```java
@@ -142,6 +134,13 @@ code and a button to send him to his wallet, so he can pay.
 Intent invoiceIntent = new Intent(this, InvoiceActivity.class);
 invoiceIntent.putExtra(InvoiceActivity.INVOICE_ID, invoice.getId());
 startActivity(invoiceIntent);
+```
+
+### Check if the user has a bitcoin wallet
+```java
+if (BitPayAndroid.isWalletAvailable(mContext)) {
+    // ...
+}
 ```
 
 ## More Samples and Documentation
