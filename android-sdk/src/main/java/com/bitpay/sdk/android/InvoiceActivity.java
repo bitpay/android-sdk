@@ -92,7 +92,7 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
                 }
                 progressBar.setProgress(progress);
                 if (progress == 100) {
-                    progressBar.setVisibility(ProgressBar.GONE);
+                    progressBar.setVisibility(ProgressBar.INVISIBLE);
                 }
             }
         });

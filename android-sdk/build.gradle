@@ -2,7 +2,7 @@ apply plugin: 'android-library'
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-version = "0.2.2"
+version = "0.2.4"
 group = "com.bitpay"
 
 configurations {
@@ -47,6 +47,7 @@ dependencies {
     compile 'com.google:bitcoinj:0.11.3'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.4.2'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.2.3'
+    compile 'junit:junit:4.11'
     compile 'org.apache.httpcomponents:httpclient-android:4.3.5'
     compile 'commons-codec:commons-codec:1.9'
 }
