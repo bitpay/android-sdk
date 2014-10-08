@@ -159,4 +159,4 @@ Contact support via [our official helpdesk](https://support.bitpay.com) or [ask 
 
 ## License
 
-Code released under [the MIT license](https://github.com/bitpay/bitcore/blob/master/LICENSE).
+Code released under [the MIT license](https://github.com/bitpay/android-sdk/blob/master/LICENSE).
