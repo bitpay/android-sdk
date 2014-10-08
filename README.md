@@ -55,14 +55,16 @@ Please go to https://bitpay.com to create an account.
 
 Go to [*My Account* > *API Tokens*](https://bitpay.com/api-tokens) section. Click on the _Add New Token_ button and make a token with the `Point-of-Sale` capability for multiple clients. You can then include this token with your application.
 
-Open the bin folder and excecute the pairing utility using the created token.
+#### (Advanced) Pairing a 'Merchant' Token
+
+If you need access to all of the capabilities of the API, you'll need to create a token under the `Mechant` facade. Follow the same steps and pair your token with a command line tool located in the `bin` folder.
+
 ```bash
     $ cd bin
     $ npm install bitauth
     $ ./getClientToken <pairing code, 7 letters>
     Successfully paired. Your client token is: 70163c90f18df866d7a4ec3b8f7215f0013e3f81749f6222938a1f4d9ce3e97e
 ```
-This token can now be used to instantiate a Bitpay client object.
 
 ## Sample Code and Usage
 

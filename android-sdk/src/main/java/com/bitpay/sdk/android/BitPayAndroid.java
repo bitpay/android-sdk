@@ -148,7 +148,7 @@ public class BitPayAndroid extends BitPay {
         };
     }
 
-    public static BitpayPromise<BitPayAndroid> getClient(final String privateKey, final Executor executor) {
+    public static BitpayPromise<BitPayAndroid> getClient(final String privateKey, final String server, final Executor executor) {
         return new BitpayPromise<BitPayAndroid>() {
             @Override
             public void then(final PromiseCallback<BitPayAndroid> callback) {
@@ -161,13 +161,20 @@ public class BitPayAndroid extends BitPay {
                             callback.onSuccess(bitPayAndroid);
                         }
                     }
-                }.executeOnExecutor(executor, privateKey);
+                }.executeOnExecutor(executor, privateKey, server);
             }
         };
     }
 
     public static BitpayPromise<BitPayAndroid> getClient(final String privateKey) {
         return getClient(privateKey, AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    public static BitpayPromise<BitPayAndroid> getClient(final String privateKey, final Executor executor) {
+        return getClient(privateKey, "https://bitpay.com/", executor);
+    }
+    public static BitpayPromise<BitPayAndroid> getClient(final String privateKey, final String server) {
+        return getClient(privateKey, server, AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public static BitpayPromise<BitPayAndroid> withToken(final String token, final String serverUrl) {

@@ -15,18 +15,25 @@ import android.widget.ProgressBar;
 import com.bitpay.sdk.model.Invoice;
 import com.bitpay.sdk.android.R;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMessageCallback, NfcAdapter.OnNdefPushCompleteCallback {
 
     public static final String INVOICE = "invoice";
-    public static final String PRIVATE_KEY = "privateKey";
+    private static final int FAKE_LOADING_MILLIS = 200;
+    private static final int FAKE_LOADING_INTERVAL = 200;
+    private static ScheduledExecutorService worker;
+    private static final int FAKE_LOADING_PERCENT = 35;
 
-    private String mEcKey = null;
+    private long startTime;
+    private int progress;
     private Invoice mInvoice = null;
-    private BitPayAndroid.GetClientTask clientTask;
-    private BitPayAndroid.FollowInvoiceStatusTask invoiceTask;
     private WebView webView;
     private ProgressBar progressBar;
     private NfcAdapter mNfcAdapter;
+    private Runnable command;
 
     public static int getResourseIdByName(String packageName, String className, String name) {
         Class r = null;
@@ -63,25 +70,23 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
 
     }
 
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(INVOICE, mInvoice);
-        outState.putString(PRIVATE_KEY, mEcKey);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getResourseIdByName(getPackageName(), "layout", "activity_invoice"));
+        startTime = System.currentTimeMillis();
+        worker = Executors.newSingleThreadScheduledExecutor();
 
         if (savedInstanceState != null) {
             mInvoice = savedInstanceState.getParcelable(INVOICE);
-            mEcKey = savedInstanceState.getString(PRIVATE_KEY);
         } else {
             mInvoice = getIntent().getParcelableExtra(INVOICE);
-            mEcKey = getIntent().getStringExtra(PRIVATE_KEY);
         }
         webView = (WebView) findViewById(getResourseIdByName(getPackageName(), "id", "webView"));
         progressBar = (ProgressBar) findViewById(getResourseIdByName(getPackageName(), "id", "progressBar"));
@@ -90,12 +95,20 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
                 if (progress < 100 && progressBar.getVisibility() == ProgressBar.GONE) {
                     progressBar.setVisibility(ProgressBar.VISIBLE);
                 }
-                progressBar.setProgress(progress);
+                InvoiceActivity.this.progress = progress;
+                calculateFakedProgress(progress);
                 if (progress == 100) {
                     progressBar.setVisibility(ProgressBar.INVISIBLE);
                 }
             }
         });
+        command = new Runnable() {
+            @Override
+            public void run() {
+                calculateFakedProgress(progress);
+            }
+        };
+        worker.scheduleWithFixedDelay(command, FAKE_LOADING_INTERVAL, FAKE_LOADING_INTERVAL, TimeUnit.MILLISECONDS);
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if(mNfcAdapter != null) {
@@ -109,15 +122,30 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
         }
     }
 
+    private void calculateFakedProgress(final int progress) {
+        long currentTime = System.currentTimeMillis();
+        int elapsedSinceStart = (int) (currentTime - startTime);
+        final int tenthOfProgress = elapsedSinceStart / FAKE_LOADING_MILLIS;
+        if (tenthOfProgress >= FAKE_LOADING_PERCENT) {
+            worker.shutdown();
+        }
+        final int fakeProgress;
+        if (progress == 100) {
+            fakeProgress = 100;
+        } else {
+            fakeProgress = (tenthOfProgress >= FAKE_LOADING_PERCENT ? FAKE_LOADING_PERCENT : tenthOfProgress) + progress * (100 - FAKE_LOADING_PERCENT) / 100;
+        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressBar.setProgress(fakeProgress);
+            }
+        });
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
-        if (clientTask != null) {
-            clientTask.cancel(true);
-        }
-        if (invoiceTask != null) {
-            invoiceTask.cancel(true);
-        }
         webView.stopLoading();
     }
 
@@ -128,44 +156,12 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
         if (webView.getUrl() == null || webView.getProgress() != 100) {
             webView.loadUrl(mInvoice.getUrl());
         }
-        clientTask = new BitPayAndroid.GetClientTask() {
-            @Override
-            protected void onPostExecute(final BitPayAndroid bitPay) {
-                clientTask = null;
-                if (bitPay != null) {
+    }
 
-                    invoiceTask = new BitPayAndroid.FollowInvoiceStatusTask(bitPay) {
-
-                        @Override
-                        public void onStatePaid() {
-                            finish();
-                        }
-
-                        @Override
-                        public void onStateConfirmed() {
-                            finish();
-                        }
-
-                        @Override
-                        public void onStateComplete() {
-                            finish();
-                        }
-
-                        @Override
-                        public void onStateExpired() {
-                            finish();
-                        }
-                        @Override
-                        public void onStateInvalid() {
-                            finish();
-                        }
-
-                    };
-                    invoiceTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mInvoice.getId());
-                }
-            }
-        };
-        clientTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mEcKey);
+    @Override
+    protected void onStop() {
+        super.onStop();
+        worker.shutdown();
     }
 
     @Override

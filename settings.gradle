@@ -1,1 +1,1 @@
-include ':android-sdk'
+include ':android-sdk', ':test'
