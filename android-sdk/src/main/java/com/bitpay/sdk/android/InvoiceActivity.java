@@ -21,6 +21,12 @@ import java.util.concurrent.TimeUnit;
 
 public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMessageCallback, NfcAdapter.OnNdefPushCompleteCallback {
 
+    public static final int RESULT_STATE_INVALID = 1;
+    public static final int RESULT_EXPIRED = 2;
+    public static final int RESULT_COMPLETE = 3;
+    public static final int RESULT_CONFIRMED = 4;
+    public static final int RESULT_PAID = 5;
+
     public static final String INVOICE = "invoice";
     private static final int FAKE_LOADING_MILLIS = 200;
     private static final int FAKE_LOADING_INTERVAL = 200;
@@ -34,6 +40,8 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
     private ProgressBar progressBar;
     private NfcAdapter mNfcAdapter;
     private Runnable command;
+    private BitPayAndroid client;
+    private AsyncTask<String, String, Void> followInvoiceTask;
 
     public static int getResourseIdByName(String packageName, String className, String name) {
         Class r = null;
@@ -89,6 +97,8 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
             mInvoice = getIntent().getParcelableExtra(INVOICE);
         }
         webView = (WebView) findViewById(getResourseIdByName(getPackageName(), "id", "webView"));
+        webView.getSettings().setJavaScriptEnabled(true);
+
         progressBar = (ProgressBar) findViewById(getResourseIdByName(getPackageName(), "id", "progressBar"));
         webView.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress) {
@@ -120,6 +130,43 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
         } else {
             Log.i("InvoiceActivity", "NFC is not available on this device");
         }
+        followInvoiceTask = new BitPayAndroid.FollowInvoiceStatusTask(new BitPayAndroid()) {
+
+            @Override
+            public void onStatePaid() {
+                InvoiceActivity.this.setResult(RESULT_PAID);
+                InvoiceActivity.this.finish();
+                super.onStatePaid();
+            }
+
+            @Override
+            public void onStateConfirmed() {
+                InvoiceActivity.this.setResult(RESULT_CONFIRMED);
+                InvoiceActivity.this.finish();
+                super.onStateConfirmed();
+            }
+
+            @Override
+            public void onStateComplete() {
+                InvoiceActivity.this.setResult(RESULT_COMPLETE);
+                InvoiceActivity.this.finish();
+                super.onStateComplete();
+            }
+
+            @Override
+            public void onStateExpired() {
+                InvoiceActivity.this.setResult(RESULT_EXPIRED);
+                InvoiceActivity.this.finish();
+                super.onStateExpired();
+            }
+
+            @Override
+            public void onStateInvalid() {
+                InvoiceActivity.this.setResult(RESULT_STATE_INVALID);
+                InvoiceActivity.this.finish();
+                super.onStateInvalid();
+            }
+        }.execute(mInvoice.getId());
     }
 
     private void calculateFakedProgress(final int progress) {
@@ -147,6 +194,7 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
     protected void onPause() {
         super.onPause();
         webView.stopLoading();
+        followInvoiceTask.cancel(true);
     }
 
     @Override
@@ -156,6 +204,7 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
         if (webView.getUrl() == null || webView.getProgress() != 100) {
             webView.loadUrl(mInvoice.getUrl());
         }
+        followInvoiceTask.execute(mInvoice.getId());
     }
 
     @Override

@@ -46,7 +46,7 @@ public class BitPayAndroid extends BitPay {
     public BitPayAndroid(String clientName) throws BitPayException {
         super(clientName);
     }
-    public BitPayAndroid() throws BitPayException {
+    public BitPayAndroid() {
         super();
     }
 
@@ -359,7 +359,7 @@ public class BitPayAndroid extends BitPay {
 
     public static class FollowInvoiceStatusTask extends AsyncTask<String, String, Void> {
 
-        private static final long DELAY_MS = 5000;
+        private static final long DELAY_MS = 15000;
         private BitPayAndroid mBitpay;
         public FollowInvoiceStatusTask (BitPayAndroid bitpay) {
             mBitpay = bitpay;

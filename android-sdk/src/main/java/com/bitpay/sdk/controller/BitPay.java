@@ -63,7 +63,7 @@ public class BitPay {
      * @param envUrl     - The target server URL.
      * @throws BitPayException
      */
-    public BitPay(String clientName, String envUrl) throws BitPayException {
+    public BitPay(String clientName, String envUrl) {
         if (clientName.equals(BITPAY_PLUGIN_INFO)) {
             try {
                 clientName += " on " + java.net.InetAddress.getLocalHost();
@@ -75,10 +75,6 @@ public class BitPay {
 
         _baseUrl = envUrl;
         _httpClient = new DefaultHttpClient();
-
-        this.initKeys();
-        this.deriveIdentity();
-        this.tryGetAccessTokens();
     }
 
     public BitPay(String clientName) throws BitPayException {
@@ -98,7 +94,7 @@ public class BitPay {
         _tokenCache.put(token.getFacade(), token.getValue());
     }
 
-    public BitPay() throws BitPayException {
+    public BitPay() {
         this(BITPAY_PLUGIN_INFO, BITPAY_URL);
     }
 
