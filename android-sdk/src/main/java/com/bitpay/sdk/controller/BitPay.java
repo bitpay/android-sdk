@@ -47,13 +47,13 @@ public class BitPay {
 
     static private ObjectMapper mapper = new ObjectMapper();
 
-    private HttpClient _httpClient = null;
-    private String _baseUrl = BITPAY_URL;
-    public ECKey _ecKey = null;
-    private String _identity = "";
-    private long _nonce = new Date().getTime();
-    private boolean _disableNonce = false;
-    private String _clientName = "";
+    protected HttpClient _httpClient = null;
+    protected String _baseUrl = BITPAY_URL;
+    protected ECKey _ecKey = null;
+    protected String _identity = "";
+    protected long _nonce = new Date().getTime();
+    protected boolean _disableNonce = false;
+    protected String _clientName = "";
     protected Hashtable<String, String> _tokenCache; // {facade, token}
 
     /**

@@ -28,6 +28,7 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
     public static final int RESULT_PAID = 5;
 
     public static final String INVOICE = "invoice";
+    public static final String CLIENT = "bitpay";
     private static final int FAKE_LOADING_MILLIS = 200;
     private static final int FAKE_LOADING_INTERVAL = 200;
     private static ScheduledExecutorService worker;
@@ -93,8 +94,10 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
 
         if (savedInstanceState != null) {
             mInvoice = savedInstanceState.getParcelable(INVOICE);
+            client = savedInstanceState.getParcelable(CLIENT);
         } else {
             mInvoice = getIntent().getParcelableExtra(INVOICE);
+            client = getIntent().getParcelableExtra(CLIENT);
         }
         webView = (WebView) findViewById(getResourseIdByName(getPackageName(), "id", "webView"));
         webView.getSettings().setJavaScriptEnabled(true);
@@ -137,7 +140,10 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
         if (followInvoiceTask != null) {
             followInvoiceTask.cancel(true);
         }
-        followInvoiceTask = new BitPayAndroid.FollowInvoiceStatusTask(new BitPayAndroid()) {
+        if (client == null) {
+            return;
+        }
+        followInvoiceTask = new BitPayAndroid.FollowInvoiceStatusTask(client) {
 
             @Override
             public void onStatePaid() {
@@ -201,7 +207,9 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
     protected void onPause() {
         super.onPause();
         webView.stopLoading();
-        followInvoiceTask.cancel(true);
+        if (followInvoiceTask != null) {
+            followInvoiceTask.cancel(true);
+        }
     }
 
     @Override

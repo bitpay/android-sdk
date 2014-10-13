@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.bitpay.sdk.android.interfaces.PromiseCallback;
 import com.bitpay.sdk.android.promises.BitpayPromise;
@@ -16,6 +18,7 @@ import com.bitpay.sdk.model.Rates;
 import com.bitpay.sdk.model.Token;
 import com.google.bitcoin.core.ECKey;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -26,7 +29,7 @@ import java.util.concurrent.Executor;
 /**
  * Created by eordano on 9/10/14.
  */
-public class BitPayAndroid extends BitPay {
+public class BitPayAndroid extends BitPay implements Parcelable {
 
     private static final String EMPTY_BITCOIN_URI = "bitcoin:";
     private Executor executor = AsyncTask.THREAD_POOL_EXECUTOR;
@@ -36,7 +39,7 @@ public class BitPayAndroid extends BitPay {
         super(ecKey, clientName, envUrl);
     }
 
-    public BitPayAndroid(String clientName, String envUrl) throws BitPayException {
+    public BitPayAndroid(String clientName, String envUrl) {
         super(clientName, envUrl);
     }
 
@@ -66,6 +69,9 @@ public class BitPayAndroid extends BitPay {
     }
 
     public String getPrivateKey() {
+        if (_ecKey == null) {
+            return null;
+        }
         return KeyUtils.exportPrivateKeyToHexa(_ecKey);
     }
 
@@ -301,6 +307,35 @@ public class BitPayAndroid extends BitPay {
         };
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(_baseUrl);
+        dest.writeString(_clientName);
+        dest.writeSerializable(_tokenCache);
+    }
+
+
+    public static final Parcelable.Creator<BitPayAndroid> CREATOR = new Parcelable.Creator<BitPayAndroid>() {
+        public BitPayAndroid createFromParcel(Parcel in) {
+            String env = in.readString();
+            String client = in.readString();
+            BitPayAndroid result = new BitPayAndroid(client, env);
+
+            result._tokenCache = (java.util.Hashtable<String, String>) in.readSerializable();
+            return result;
+        }
+
+        @Override
+        public BitPayAndroid[] newArray(int size) {
+            return new BitPayAndroid[size];
+        }
+    };
+
     public static class GetClientTask extends AsyncTask<String, Void, BitPayAndroid> {
         protected BitPayException error;
 
@@ -369,7 +404,6 @@ public class BitPayAndroid extends BitPay {
         protected final Void doInBackground(String... params) {
             while (true) {
                 try {
-                    Thread.sleep(DELAY_MS);
                     try {
                         Invoice invoice = mBitpay.getInvoice(params[0]);
                         String status = invoice.getStatus();
@@ -380,6 +414,7 @@ public class BitPayAndroid extends BitPay {
                     } catch (BitPayException e) {
                         e.printStackTrace();
                     }
+                    Thread.sleep(DELAY_MS);
                 } catch (InterruptedException e) {
                     return null;
                 }
