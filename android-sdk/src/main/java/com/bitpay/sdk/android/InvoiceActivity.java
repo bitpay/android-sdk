@@ -130,6 +130,13 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
         } else {
             Log.i("InvoiceActivity", "NFC is not available on this device");
         }
+        triggerStatusCheck();
+    }
+
+    private void triggerStatusCheck() {
+        if (followInvoiceTask != null) {
+            followInvoiceTask.cancel(true);
+        }
         followInvoiceTask = new BitPayAndroid.FollowInvoiceStatusTask(new BitPayAndroid()) {
 
             @Override
@@ -204,7 +211,6 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
         if (webView.getUrl() == null || webView.getProgress() != 100) {
             webView.loadUrl(mInvoice.getUrl());
         }
-        followInvoiceTask.execute(mInvoice.getId());
     }
 
     @Override

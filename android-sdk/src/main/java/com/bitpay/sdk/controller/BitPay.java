@@ -65,11 +65,7 @@ public class BitPay {
      */
     public BitPay(String clientName, String envUrl) {
         if (clientName.equals(BITPAY_PLUGIN_INFO)) {
-            try {
-                clientName += " on " + java.net.InetAddress.getLocalHost();
-            } catch (UnknownHostException e) {
-                clientName += " on unknown host";
-            }
+            clientName += " on unknown host";
         }
         _clientName = clientName;
 

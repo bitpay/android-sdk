@@ -369,19 +369,19 @@ public class BitPayAndroid extends BitPay {
         protected final Void doInBackground(String... params) {
             while (true) {
                 try {
-                    Invoice invoice = mBitpay.getInvoice(params[0]);
-                    String status = invoice.getStatus();
-                    publishProgress(status);
+                    Thread.sleep(DELAY_MS);
                     try {
-                        Thread.sleep(DELAY_MS);
-                    } catch (InterruptedException e) {
-                        return null;
+                        Invoice invoice = mBitpay.getInvoice(params[0]);
+                        String status = invoice.getStatus();
+                        publishProgress(status);
+                        if (END_STATUS.contains(status)) {
+                            return null;
+                        }
+                    } catch (BitPayException e) {
+                        e.printStackTrace();
                     }
-                    if (END_STATUS.contains(status)) {
-                        return null;
-                    }
-                } catch (BitPayException e) {
-                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    return null;
                 }
             }
         }
