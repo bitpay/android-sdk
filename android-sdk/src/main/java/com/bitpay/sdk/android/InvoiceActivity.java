@@ -219,6 +219,7 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
         if (webView.getUrl() == null || webView.getProgress() != 100) {
             webView.loadUrl(mInvoice.getUrl());
         }
+        triggerStatusCheck();
     }
 
     @Override

@@ -83,9 +83,6 @@ public class BitPay {
         _baseUrl = url;
         _httpClient = new DefaultHttpClient();
 
-        this.initKeys();
-        this.deriveIdentity();
-
         _tokenCache = new Hashtable<String, String>();
         _tokenCache.put(token.getFacade(), token.getValue());
     }

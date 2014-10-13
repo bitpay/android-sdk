@@ -311,12 +311,12 @@ public class BitPayAndroid extends BitPay implements Parcelable {
     public int describeContents() {
         return 0;
     }
-
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(_baseUrl);
         dest.writeString(_clientName);
         dest.writeSerializable(_tokenCache);
+        dest.writeString(getPrivateKey());
     }
 
 
@@ -327,6 +327,14 @@ public class BitPayAndroid extends BitPay implements Parcelable {
             BitPayAndroid result = new BitPayAndroid(client, env);
 
             result._tokenCache = (java.util.Hashtable<String, String>) in.readSerializable();
+            String eckey = in.readString();
+            if (eckey != null) {
+                try {
+                    result._ecKey = KeyUtils.loadEcKey(eckey);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
             return result;
         }
 
@@ -394,7 +402,7 @@ public class BitPayAndroid extends BitPay implements Parcelable {
 
     public static class FollowInvoiceStatusTask extends AsyncTask<String, String, Void> {
 
-        private static final long DELAY_MS = 15000;
+        private static final long DELAY_MS = 3000;
         private BitPayAndroid mBitpay;
         public FollowInvoiceStatusTask (BitPayAndroid bitpay) {
             mBitpay = bitpay;
