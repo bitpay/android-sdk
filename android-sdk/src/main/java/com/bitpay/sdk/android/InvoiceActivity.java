@@ -171,7 +171,7 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
             @Override
             public void onClick(View v) {
                 Intent bitcoinIntent = new Intent(Intent.ACTION_VIEW);
-                bitcoinIntent.setData(Uri.parse(mInvoice.getPaymentUrls().getBIP21()));
+                bitcoinIntent.setData(Uri.parse(mInvoice.getBIP21due()));
                 startActivity(bitcoinIntent);
             }
         });
@@ -189,7 +189,7 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
         if (!triggeredWallet) {
             if (BitPayAndroid.isWalletAvailable(this)) {
                 Intent bitcoinIntent = new Intent(Intent.ACTION_VIEW);
-                bitcoinIntent.setData(Uri.parse(mInvoice.getPaymentUrls().getBIP21()));
+                bitcoinIntent.setData(Uri.parse(mInvoice.getBIP21due()));
                 triggeredWallet = true;
                 startActivity(bitcoinIntent);
             } else {
@@ -242,9 +242,17 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
             protected void onProgressUpdate(Invoice... values) {
                 super.onProgressUpdate(values);
                 Invoice invoice = values[0];
+                if (invoice != null) {
+                    mInvoice = invoice;
+                } else {
+                    return;
+                }
                 if (invoice.getStatus().equals("paidPartial") && !price.getText().toString().equals(invoice.getBtcDue() + " BTC")) {
                     status.setText("Partial payment received. Due amount:");
                     price.setText(invoice.getBtcDue() + " BTC");
+                    if (qrView.getVisibility() == View.VISIBLE) {
+                        triggerQrLoad();
+                    }
                 }
                 if (invoice.getStatus().equals("paidOver")) {
                     status.setText("This invoice was overpaid.");
@@ -404,13 +412,14 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
+                qrView.setVisibility(View.GONE);
                 showQR.setVisibility(View.GONE);
                 loadingQr.setVisibility(View.VISIBLE);
             }
 
             @Override
             protected Bitmap doInBackground(Void... params) {
-                return generateQR(mInvoice.getPaymentUrls().getBIP73());
+                return generateQR(mInvoice.getBIP21due());
             }
 
             @Override
@@ -418,6 +427,7 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
                 super.onPostExecute(bitmap);
                 qrView.setImageBitmap(bitmap);
                 loadingQr.setVisibility(View.GONE);
+                showQR.setVisibility(View.GONE);
                 qrView.setVisibility(View.VISIBLE);
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null);

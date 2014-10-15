@@ -383,7 +383,12 @@ public class Invoice implements Parcelable {
     // Response fields
     //
 
-	public String getId() {
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    public String getBIP21due() {
+        return getPaymentUrls().getBIP21().substring(0, paymentUrls.getBIP21().indexOf("&amount=") + "&amount=".length()) + getBtcDue();
+    }
+
+    public String getId() {
 		return id;
 	}
 
