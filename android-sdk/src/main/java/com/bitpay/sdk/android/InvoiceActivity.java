@@ -40,6 +40,7 @@ import java.util.Hashtable;
 
 public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMessageCallback, NfcAdapter.OnNdefPushCompleteCallback {
 
+    public static final int RESULT_USER_CANCELED = 0;
     public static final int RESULT_STATE_INVALID = 1;
     public static final int RESULT_EXPIRED = 2;
     public static final int RESULT_COMPLETE = 3;
@@ -117,6 +118,7 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setResult(RESULT_USER_CANCELED);
         setContentView(getResourseIdByName(getPackageName(), "layout", "activity_invoice"));
 
         status = (TextView) findViewById(getResourseIdByName(getPackageName(), "id", "status"));
