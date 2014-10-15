@@ -84,6 +84,11 @@ public class Invoice implements Parcelable {
             }
         }
         dest.writeParcelable(paymentUrls, 0);
+        if (refundAddresses == null) {
+            dest.writeStringList(new ArrayList<String>());
+        } else {
+            dest.writeStringList(refundAddresses);
+        }
     }
 
     public static final Parcelable.Creator<Invoice> CREATOR = new Parcelable.Creator<Invoice>() {
@@ -147,6 +152,8 @@ public class Invoice implements Parcelable {
             }
 
             invoice.paymentUrls = in.readParcelable(getClass().getClassLoader());
+            invoice.refundAddresses = new ArrayList<String>();
+            in.readStringList(invoice.refundAddresses);
 
             return invoice;
         }
@@ -199,6 +206,7 @@ public class Invoice implements Parcelable {
 	private String exceptionStatus;
 	private InvoicePaymentUrls paymentUrls;
     private String confirmations;
+    private List<String> refundAddresses;
 	
     public Invoice() {}
 
@@ -487,4 +495,12 @@ public class Invoice implements Parcelable {
   		this.paymentUrls = paymentUrls;
   	}
 
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    public List<String> getRefundAddresses() {
+        return refundAddresses;
+    }
+
+    public void setRefundAddresses(List<String> refundAddresses) {
+        this.refundAddresses = refundAddresses;
+    }
 }

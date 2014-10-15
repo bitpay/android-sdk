@@ -55,7 +55,7 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
     private NfcAdapter mNfcAdapter;
     private Invoice mInvoice = null;
     private BitPayAndroid client;
-    private AsyncTask<String, String, Void> followInvoiceTask;
+    private AsyncTask<String, Invoice, Void> followInvoiceTask;
     private AsyncTask<Void, Void, Void> updateTimerTask;
 
     private ProgressBar progressBar;
@@ -64,6 +64,7 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
     private TextView price;
 
     private Button launchWallet;
+    private Button refund;
     private TextView showQR;
     private ImageView qrView;
 
@@ -120,6 +121,7 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
 
         status = (TextView) findViewById(getResourseIdByName(getPackageName(), "id", "status"));
         price = (TextView) findViewById(getResourseIdByName(getPackageName(), "id", "price"));
+        refund = (Button) findViewById(getResourseIdByName(getPackageName(), "id", "refund"));
 
         launchWallet = (Button) findViewById(getResourseIdByName(getPackageName(), "id", "launchWallet"));
         progressBar = (ProgressBar) findViewById(getResourseIdByName(getPackageName(), "id", "progressBar"));
@@ -234,6 +236,21 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
             return;
         }
         followInvoiceTask = new BitPayAndroid.FollowInvoiceStatusTask(client) {
+            @Override
+            protected void onProgressUpdate(Invoice... values) {
+                super.onProgressUpdate(values);
+                Invoice invoice = values[0];
+                if (invoice.getStatus().equals("paidPartial") && !price.getText().toString().equals(invoice.getBtcDue() + " BTC")) {
+                    status.setText("Partial payment received. Due amount:");
+                    price.setText(invoice.getBtcDue() + " BTC");
+                }
+                if (invoice.getStatus().equals("paidOver")) {
+                    status.setText("This invoice was overpaid.");
+                    hidePaymentButtons();
+                    showRefund();
+                    cancel(true);
+                }
+            }
 
             @Override
             public void onStatePaid() {
@@ -270,6 +287,39 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
                 super.onStateInvalid();
             }
         }.execute(mInvoice.getId());
+    }
+
+    private void showRefund() {
+        refund = (Button) findViewById(getResourseIdByName(getPackageName(), "id", "refund"));
+        refund.setVisibility(View.VISIBLE);
+        refund.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("message/rfc822");
+                intent.putExtra(Intent.EXTRA_EMAIL, new String[] { "support@bitpay.com" });
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Refund Request");
+                intent.putExtra(Intent.EXTRA_TEXT, "Invoice: " + mInvoice.getUrl() +
+                        (mInvoice.getRefundAddresses().size() > 0 ? "\nRefund Address:" + mInvoice.getRefundAddresses() : ""));
+
+                startActivity(Intent.createChooser(intent, "Send Email"));
+            }
+        });
+    }
+
+    private void hidePaymentButtons() {
+
+        progressBar.setVisibility(View.GONE);
+        loadingQr.setVisibility(View.GONE);
+        price.setVisibility(View.GONE);
+
+        launchWallet.setVisibility(View.GONE);
+        showQR.setVisibility(View.GONE);
+        qrView.setVisibility(View.GONE);
+
+        address.setVisibility(View.GONE);
+        timeRemaining.setVisibility(View.GONE);
+        conversion.setVisibility(View.GONE);
     }
 
     @Override

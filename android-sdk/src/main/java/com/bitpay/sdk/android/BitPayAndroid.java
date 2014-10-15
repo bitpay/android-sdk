@@ -400,7 +400,7 @@ public class BitPayAndroid extends BitPay implements Parcelable {
         }
     }
 
-    public static class FollowInvoiceStatusTask extends AsyncTask<String, String, Void> {
+    public static class FollowInvoiceStatusTask extends AsyncTask<String, Invoice, Void> {
 
         private static final long DELAY_MS = 3000;
         private BitPayAndroid mBitpay;
@@ -414,9 +414,8 @@ public class BitPayAndroid extends BitPay implements Parcelable {
                 try {
                     try {
                         Invoice invoice = mBitpay.getInvoice(params[0]);
-                        String status = invoice.getStatus();
-                        publishProgress(status);
-                        if (END_STATUS.contains(status)) {
+                        publishProgress(invoice);
+                        if (END_STATUS.contains(invoice.getStatus())) {
                             return null;
                         }
                     } catch (BitPayException e) {
@@ -430,8 +429,8 @@ public class BitPayAndroid extends BitPay implements Parcelable {
         }
 
         @Override
-        protected void onProgressUpdate(String... values) {
-            String newState = values[0];
+        protected void onProgressUpdate(Invoice... values) {
+            String newState = values[0].getStatus();
             if (newState.equals("paid")) {
                 onStatePaid();
             }

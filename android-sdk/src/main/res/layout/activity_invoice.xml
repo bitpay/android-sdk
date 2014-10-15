@@ -153,6 +153,18 @@
 
         </RelativeLayout>
 
+        <Button
+            android:id="@+id/refund"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Request Refund"
+            android:layout_below="@+id/status"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone"
+            android:textColor="@android:color/white"
+            android:padding="10dp"
+            android:background="@color/bitpay_button" />
+
     </RelativeLayout>
 
     </ScrollView>
