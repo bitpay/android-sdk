@@ -23,35 +23,139 @@
             android:layout_centerHorizontal="true" />
     </RelativeLayout>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/bitpay_scrollView"
+        android:layout_below="@+id/imageHolder"
+        android:layout_alignParentBottom="true"
+        >
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/imageHolder"
         android:id="@+id/invoiceView">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Waiting for payment..."
+            android:id="@+id/status"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:textColor="@color/bitpay_background" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="0.000 BTC"
+            android:id="@+id/price"
+            android:layout_below="@id/status"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/bitpay_background" />
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/launchWallet"
+            android:src="@drawable/accept_btc"
+            android:layout_below="@id/price"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/accept_btc"
+            android:text="Launch your Wallet"
+            android:textColor="@android:color/white"
+            android:paddingLeft="50dp" />
 
         <ProgressBar
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/progressBar"
-            android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true"
+            android:layout_marginLeft="10dp"
+            android:gravity="right"
+            android:layout_marginRight="10dp"
+            android:progress="20"
+            android:indeterminateOnly="false"
+            android:layout_below="@+id/qrContainer"
+            android:indeterminate="false" />
 
-        <WebView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/webView"
+            android:text="15:00 remaining"
+            android:id="@+id/timeRemaining"
+            android:layout_alignTop="@+id/conversion"
+            android:layout_alignLeft="@+id/progressBar"
+            android:layout_alignStart="@+id/progressBar" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.000 BTC = 0.00 USD"
+            android:id="@+id/conversion"
             android:layout_below="@+id/progressBar"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignRight="@+id/progressBar"
+            android:layout_alignEnd="@+id/progressBar"
+            android:layout_marginBottom="20dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Address"
+            android:id="@+id/address"
+            android:layout_below="@+id/launchWallet"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_centerHorizontal="true"
+            android:textStyle="bold"
+            android:textColor="@color/bitpay_button"
+            android:singleLine="true" />
+
+
+
+        <RelativeLayout
+            android:id="@+id/qrContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/address"
+            android:layout_marginBottom="20dp"
+            android:layout_centerHorizontal="true"
+            >
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/loadingQr"
+                android:layout_centerHorizontal="true"
+                android:visibility="gone" />
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Show QR Code"
+                android:id="@+id/showQr"
+                android:textColor="@color/bitpay_dark_gray" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/qr"
+                android:visibility="gone"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="0dp"
+                android:textStyle="bold"
+                android:singleLine="true"/>
+
+        </RelativeLayout>
 
     </RelativeLayout>
+
+    </ScrollView>
 
 
 </RelativeLayout>

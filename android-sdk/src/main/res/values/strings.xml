@@ -1,4 +1,5 @@
 <resources>
     <string name="bitpay_app_name">BitPay SDK</string>
     <string name="bitpay_title_activity_invoice">Invoice Details</string>
+    <string name="bitpay_waiting">Launch Wallet</string>
 </resources>

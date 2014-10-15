@@ -47,7 +47,7 @@ public class BitPay {
 
     static private ObjectMapper mapper = new ObjectMapper();
 
-    protected HttpClient _httpClient = null;
+    protected static HttpClient _httpClient = new DefaultHttpClient();
     protected String _baseUrl = BITPAY_URL;
     protected ECKey _ecKey = null;
     protected String _identity = "";
@@ -70,7 +70,6 @@ public class BitPay {
         _clientName = clientName;
 
         _baseUrl = envUrl;
-        _httpClient = new DefaultHttpClient();
     }
 
     public BitPay(String clientName) throws BitPayException {
@@ -81,7 +80,6 @@ public class BitPay {
         _clientName = "Android Authorized Client";
 
         _baseUrl = url;
-        _httpClient = new DefaultHttpClient();
 
         _tokenCache = new Hashtable<String, String>();
         _tokenCache.put(token.getFacade(), token.getValue());
@@ -103,7 +101,6 @@ public class BitPay {
         _ecKey = ecKey;
         this.deriveIdentity();
         _baseUrl = envUrl;
-        _httpClient = new DefaultHttpClient();
         this.tryGetAccessTokens();
     }
 

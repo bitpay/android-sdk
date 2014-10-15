@@ -2,7 +2,7 @@ apply plugin: 'android-library'
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-version = "0.4.2"
+version = "0.5.4"
 group = "com.bitpay"
 
 configurations {
@@ -48,6 +48,7 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.2.3'
     compile 'org.apache.httpcomponents:httpclient-android:4.3.5'
     compile 'commons-codec:commons-codec:1.9'
+    compile 'com.google.zxing:core:2.0'
 }
 
 uploadArchives {

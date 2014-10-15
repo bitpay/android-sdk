@@ -14,7 +14,7 @@ import java.util.concurrent.CountDownLatch;
  * Created by eordano on 10/8/14.
  */
 public class BitPayAndroidTest extends AndroidTestCase {
-    public static final String invoiceToken = "KUW8nvHZpbqG8xbDvtXYVL";
+    public static final String invoiceToken = "MuwmfQQE54MqGquaR6WtzV";
     public static final String privateKey = "b64a9314661c62de31e79607d2e426cc2bd7a68b2f8c58af8ee17f1bc2635dc8";
     public static final Double TOLERANCE = 0.01;
 
