@@ -13,7 +13,7 @@ to the build system you're using.
 If you're using Android Studio or gradle to build your app, add the following
 to your `build.gradle` file:
 
-    compile 'com.bitpay:sdk-android:0.4.1@aar'
+    compile 'com.bitpay:sdk-android:0.6.0@aar'
 
 Additionaly, you'll have to specify these dependencies (soon to be bundled together with the sdk):
 
@@ -22,6 +22,7 @@ Additionaly, you'll have to specify these dependencies (soon to be bundled toget
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.2.3'
     compile 'org.apache.httpcomponents:httpclient-android:4.3.5'
     compile 'commons-codec:commons-codec:1.9'
+    compile 'com.google.zxing:core:2.0'
 
 Remember to add the maven central repository at the beginning of the file:
 
@@ -37,7 +38,7 @@ If you're using maven, add the following dependency:
 <dependency>
   <groupId>com.bitpay</groupId>
   <artifactId>sdk-android</artifactId>
-  <version>0.4.1</version>
+  <version>0.6.0</version>
   <packaging>aar</packaging>
 </dependency>
 ```
