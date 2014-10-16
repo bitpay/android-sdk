@@ -37,6 +37,8 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import java.io.File;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMessageCallback, NfcAdapter.OnNdefPushCompleteCallback {
 
@@ -48,6 +50,8 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
     public static final int RESULT_PAID = 15;
     public static final int RESULT_OVERPAID = 16;
     public static final int RESULT_PARTIALLY_PAID = 17;
+
+    public static final Executor executor = Executors.newCachedThreadPool();
 
     public static final String INVOICE = "invoice";
     public static final String CLIENT = "bitpay";
@@ -230,7 +234,7 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
                     progressBar.setProgress((getRemainingSeconds() * 100) / (15 * 60));
                 }
             }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null);
+        }.executeOnExecutor(executor, null, null);
     }
 
     private void triggerStatusCheck() {
@@ -298,7 +302,7 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
 
                             InvoiceActivity.this.finish();
                         }
-                    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null);
+                    }.executeOnExecutor(executor, null, null);
 
                     this.cancel(true);
                 }
@@ -327,7 +331,7 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
                 InvoiceActivity.this.setResult(RESULT_STATE_INVALID);
                 checkExceptionAndFinish();
             }
-        }.execute(mInvoice.getId());
+        }.executeOnExecutor(executor, mInvoice.getId());
     }
 
     private void showRefund() {
@@ -470,6 +474,6 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
                 showQR.setVisibility(View.GONE);
                 qrView.setVisibility(View.VISIBLE);
             }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null);
+        }.executeOnExecutor(executor, null, null);
     }
 }

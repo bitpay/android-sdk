@@ -419,7 +419,6 @@ public class BitPayAndroid extends BitPay implements Parcelable {
                             return null;
                         }
                     } catch (BitPayException e) {
-                        e.printStackTrace();
                     }
                     Thread.sleep(DELAY_MS);
                 } catch (InterruptedException e) {
@@ -430,6 +429,9 @@ public class BitPayAndroid extends BitPay implements Parcelable {
 
         @Override
         protected void onProgressUpdate(Invoice... values) {
+            if (values[0] == null) {
+                return;
+            }
             String newState = values[0].getStatus();
             if (newState.equals("paid")) {
                 onStatePaid();
