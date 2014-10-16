@@ -15,7 +15,7 @@ to your `build.gradle` file:
 
     compile 'com.bitpay:sdk-android:1.0.0@aar'
 
-Additionaly, you'll have to specify these dependencies (soon to be bundled together with the sdk):
+Additionaly, you'll have to specify these dependencies:
 
     compile 'com.google:bitcoinj:0.11.3'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.4.2'
