@@ -46,6 +46,8 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
     public static final int RESULT_COMPLETE = 13;
     public static final int RESULT_CONFIRMED = 14;
     public static final int RESULT_PAID = 15;
+    public static final int RESULT_OVERPAID = 16;
+    public static final int RESULT_PARTIALLY_PAID = 17;
 
     public static final String INVOICE = "invoice";
     public static final String CLIENT = "bitpay";
@@ -241,7 +243,6 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
         followInvoiceTask = new BitPayAndroid.FollowInvoiceStatusTask(client) {
             @Override
             protected void onProgressUpdate(Invoice... values) {
-                super.onProgressUpdate(values);
                 Invoice invoice = values[0];
                 Invoice prev = mInvoice;
                 if (invoice != null) {
@@ -252,20 +253,30 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
                 if (invoice.getExceptionStatus().equals("paidPartial") && !prev.getBtcDue().equals(invoice.getBtcDue())) {
                     status.setText("Partial payment received. Due amount:");
                     price.setText(invoice.getBtcDue() + " BTC");
+                    InvoiceActivity.this.setResult(RESULT_PARTIALLY_PAID);
                     if (qrView.getVisibility() == View.VISIBLE) {
                         triggerQrLoad();
                     }
+                    return;
                 }
                 if (invoice.getExceptionStatus().equals("paidOver")) {
+                    InvoiceActivity.this.setResult(RESULT_OVERPAID);
                     status.setText("This invoice was overpaid.");
                     hidePaymentButtons();
                     showRefund();
-                    cancel(true);
+                    this.cancel(true);
+                    return;
                 }
+                super.onProgressUpdate(values);
             }
 
             @Override
             public void onStatePaid() {
+                InvoiceActivity.this.setResult(RESULT_PAID);
+                checkExceptionAndFinish();
+            }
+
+            private void checkExceptionAndFinish() {
                 if (mInvoice.getExceptionStatus().equals("false")) {
                     hidePaymentButtons();
                     showReceipt();
@@ -285,7 +296,6 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
                         protected void onPostExecute(Void aVoid) {
                             super.onPostExecute(aVoid);
 
-                            InvoiceActivity.this.setResult(RESULT_PAID);
                             InvoiceActivity.this.finish();
                         }
                     }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null);
@@ -297,29 +307,25 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
             @Override
             public void onStateConfirmed() {
                 InvoiceActivity.this.setResult(RESULT_CONFIRMED);
-                InvoiceActivity.this.finish();
-                super.onStateConfirmed();
+                checkExceptionAndFinish();
             }
 
             @Override
             public void onStateComplete() {
                 InvoiceActivity.this.setResult(RESULT_COMPLETE);
-                InvoiceActivity.this.finish();
-                super.onStateComplete();
+                checkExceptionAndFinish();
             }
 
             @Override
             public void onStateExpired() {
                 InvoiceActivity.this.setResult(RESULT_EXPIRED);
-                InvoiceActivity.this.finish();
-                super.onStateExpired();
+                checkExceptionAndFinish();
             }
 
             @Override
             public void onStateInvalid() {
                 InvoiceActivity.this.setResult(RESULT_STATE_INVALID);
-                InvoiceActivity.this.finish();
-                super.onStateInvalid();
+                checkExceptionAndFinish();
             }
         }.execute(mInvoice.getId());
     }
