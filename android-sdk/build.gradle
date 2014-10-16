@@ -2,7 +2,7 @@ apply plugin: 'android-library'
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-version = "0.6.4"
+version = "0.6.7"
 group = "com.bitpay"
 
 configurations {

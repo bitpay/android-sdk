@@ -40,16 +40,17 @@ import java.util.Hashtable;
 
 public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMessageCallback, NfcAdapter.OnNdefPushCompleteCallback {
 
-    public static final int RESULT_USER_CANCELED = 0;
-    public static final int RESULT_STATE_INVALID = 1;
-    public static final int RESULT_EXPIRED = 2;
-    public static final int RESULT_COMPLETE = 3;
-    public static final int RESULT_CONFIRMED = 4;
-    public static final int RESULT_PAID = 5;
+    public static final int RESULT_USER_CANCELED = 10;
+    public static final int RESULT_STATE_INVALID = 11;
+    public static final int RESULT_EXPIRED = 12;
+    public static final int RESULT_COMPLETE = 13;
+    public static final int RESULT_CONFIRMED = 14;
+    public static final int RESULT_PAID = 15;
 
     public static final String INVOICE = "invoice";
     public static final String CLIENT = "bitpay";
     private static final String TRIGGERED_WALLET = "triggered";
+    private static final long PAID_INTERVAL_MILLIS = 2000;
 
     private boolean triggeredWallet;
 
@@ -242,19 +243,20 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
             protected void onProgressUpdate(Invoice... values) {
                 super.onProgressUpdate(values);
                 Invoice invoice = values[0];
+                Invoice prev = mInvoice;
                 if (invoice != null) {
                     mInvoice = invoice;
                 } else {
                     return;
                 }
-                if (invoice.getStatus().equals("paidPartial") && !price.getText().toString().equals(invoice.getBtcDue() + " BTC")) {
+                if (invoice.getExceptionStatus().equals("paidPartial") && !prev.getBtcDue().equals(invoice.getBtcDue())) {
                     status.setText("Partial payment received. Due amount:");
                     price.setText(invoice.getBtcDue() + " BTC");
                     if (qrView.getVisibility() == View.VISIBLE) {
                         triggerQrLoad();
                     }
                 }
-                if (invoice.getStatus().equals("paidOver")) {
+                if (invoice.getExceptionStatus().equals("paidOver")) {
                     status.setText("This invoice was overpaid.");
                     hidePaymentButtons();
                     showRefund();
@@ -264,9 +266,32 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
 
             @Override
             public void onStatePaid() {
-                InvoiceActivity.this.setResult(RESULT_PAID);
-                InvoiceActivity.this.finish();
-                super.onStatePaid();
+                if (mInvoice.getExceptionStatus().equals("false")) {
+                    hidePaymentButtons();
+                    showReceipt();
+                    new AsyncTask<Void, Void, Void>() {
+
+                        @Override
+                        protected Void doInBackground(Void... params) {
+                            try {
+                                Thread.sleep(PAID_INTERVAL_MILLIS);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            return null;
+                        }
+
+                        @Override
+                        protected void onPostExecute(Void aVoid) {
+                            super.onPostExecute(aVoid);
+
+                            InvoiceActivity.this.setResult(RESULT_PAID);
+                            InvoiceActivity.this.finish();
+                        }
+                    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null);
+
+                    this.cancel(true);
+                }
             }
 
             @Override
@@ -307,14 +332,23 @@ public class InvoiceActivity extends Activity implements NfcAdapter.CreateNdefMe
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("message/rfc822");
-                intent.putExtra(Intent.EXTRA_EMAIL, new String[] { "support@bitpay.com" });
+                intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"support@bitpay.com"});
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Refund Request");
                 intent.putExtra(Intent.EXTRA_TEXT, "Invoice: " + mInvoice.getUrl() +
-                        (mInvoice.getRefundAddresses().size() > 0 ? "\nRefund Address:" + mInvoice.getRefundAddresses() : ""));
+                        ((mInvoice.getRefundAddresses() != null && mInvoice.getRefundAddresses().size() > 0)
+                                ? "\nRefund Address:" + mInvoice.getRefundAddresses() : "")
+                        + "\nReason: Overpaid invoice");
 
                 startActivity(Intent.createChooser(intent, "Send Email"));
             }
         });
+    }
+
+    private void showReceipt() {
+
+        price.setVisibility(View.VISIBLE);
+        price.setText(mInvoice.getBtcPrice() + " BTC paid");
+        status.setText("Your payment was received successfully");
     }
 
     private void hidePaymentButtons() {
