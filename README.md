@@ -13,7 +13,7 @@ to the build system you're using.
 If you're using Android Studio or gradle to build your app, add the following
 to your `build.gradle` file:
 
-    compile 'com.bitpay:sdk-android:1.0.0@aar'
+    compile 'com.bitpay:android-sdk:1.0.0@aar'
 
 Additionaly, you'll have to specify these dependencies:
 
@@ -37,7 +37,7 @@ If you're using maven, add the following dependency:
 ```xml
 <dependency>
   <groupId>com.bitpay</groupId>
-  <artifactId>sdk-android</artifactId>
+  <artifactId>android-sdk</artifactId>
   <version>1.0.0</version>
   <packaging>aar</packaging>
 </dependency>
