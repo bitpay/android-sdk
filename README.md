@@ -13,23 +13,28 @@ to the build system you're using.
 If you're using Android Studio or gradle to build your app, add the following
 to your `build.gradle` file:
 
-    compile 'com.bitpay:android-sdk:1.0.0@aar'
+```gradle
+compile 'com.bitpay:android-sdk:1.0.0@aar'
+```
 
 Additionaly, you'll have to specify these dependencies:
 
-    compile 'com.google:bitcoinj:0.11.3'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.4.2'
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.2.3'
-    compile 'org.apache.httpcomponents:httpclient-android:4.3.5'
-    compile 'commons-codec:commons-codec:1.9'
-    compile 'com.google.zxing:core:2.0'
+```gradle
+compile 'com.google:bitcoinj:0.11.3'
+compile 'com.fasterxml.jackson.core:jackson-databind:2.4.2'
+compile 'com.fasterxml.jackson.core:jackson-annotations:2.2.3'
+compile 'org.apache.httpcomponents:httpclient-android:4.3.5'
+compile 'commons-codec:commons-codec:1.9'
+compile 'com.google.zxing:core:2.0'
+```
 
 Remember to add the maven central repository at the beginning of the file:
 
+```java
     repositories {
         mavenCentral()
     }
-
+```
 
 ### Maven dependency
 
@@ -61,10 +66,10 @@ Go to [*My Account* > *API Tokens*](https://bitpay.com/api-tokens) section. Clic
 If you need access to all of the capabilities of the API, you'll need to create a token under the `Mechant` facade. Follow the same steps and pair your token with a command line tool located in the `bin` folder.
 
 ```bash
-    $ cd bin
-    $ npm install bitauth
-    $ ./getClientToken <pairing code, 7 letters>
-    Successfully paired. Your client token is: 70163c90f18df866d7a4ec3b8f7215f0013e3f81749f6222938a1f4d9ce3e97e
+$ cd bin
+$ npm install bitauth
+$ ./getClientToken <pairing code, 7 letters>
+Successfully paired. Your client token is: 70163c90f18df866d7a4ec3b8f7215f0013e3f81749f6222938a1f4d9ce3e97e
 ```
 
 ## Sample Code and Usage
