@@ -123,7 +123,7 @@ new BitPayAndroid.CreateInvoiceTask(bitpay) {
 
 #### Using promises
 ```java
-bitpay.createInvoice(new Invoice(200, "USD")).then(new InvoicePromiseCallback() {
+bitpay.createNewInvoice(new Invoice(200, "USD")).then(new InvoicePromiseCallback() {
 
     public void onSuccess(Invoice invoice) {
         // ...
