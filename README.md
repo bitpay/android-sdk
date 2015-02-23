@@ -1,3 +1,5 @@
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.bitpay/android-sdk/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.bitpay/android-sdk)
+
 # BitPay Android SDK
 
 This SDK allows your application to quickly create an invoice, show the user an option to pay you,
