@@ -6,7 +6,7 @@ This SDK allows your application to quickly create an invoice, show the user an 
 
 ## Quick Start Guide
 
-To get up and running with our Java library quickly, see the GUIDE here: https://github.com/bitpay/android-sdk/blob/master/GUIDE.md
+To get up and running with our Android SDK quickly, see the GUIDE here: https://github.com/bitpay/android-sdk/blob/master/GUIDE.md
 
 
 ## More Samples and Documentation
