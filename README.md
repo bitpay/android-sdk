@@ -1,4 +1,5 @@
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.bitpay/android-sdk/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.bitpay/android-sdk)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/bitpay/android-sdk/master/LICENSE)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.bitpay/android-sdk/badge.svg?style=flat-square)](https://maven-badges.herokuapp.com/maven-central/com.bitpay/android-sdk)
 
 # BitPay Android SDK
 
