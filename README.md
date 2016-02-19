@@ -23,7 +23,7 @@ To read more about invoices refer to the BitPay's [API documentation](https://bi
 
 ## Troubleshooting
 
-Contact support via [our official helpdesk](https://support.bitpay.com) or [ask the community](https://github.com/bitpay/android-sdk/issues).
+Contact support via [our official helpdesk](https://help.bitpay.com) or [ask the community](https://github.com/bitpay/android-sdk/issues).
 
 ## License
 
