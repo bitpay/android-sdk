@@ -1,11 +1,10 @@
 package com.bitpay.sdk.controller;
 
-import android.util.Log;
-
 import com.bitpay.sdk.model.Invoice;
 import com.bitpay.sdk.model.Rate;
 import com.bitpay.sdk.model.Rates;
 import com.bitpay.sdk.model.Token;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -28,12 +27,12 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BitPay {
 
     private static final String BITPAY_API_VERSION = "2.0.0";
@@ -425,56 +424,51 @@ public class BitPay {
         }
     }
 
-	private String responseToJsonString(HttpResponse response) throws BitPayException 
-	{
-		if (response == null)
-		{
-			throw new BitPayException("Error: HTTP response is null");
-		}
-		try {
-			// Get the JSON string from the response.
-			HttpEntity entity = response.getEntity();
-			String jsonString;
-			jsonString = EntityUtils.toString(entity, "UTF-8");
+    private String responseToJsonString(HttpResponse response) throws BitPayException {
+        if (response == null) {
+            throw new BitPayException("Error: HTTP response is null");
+        }
+        try {
+            // Get the JSON string from the response.
+            HttpEntity entity = response.getEntity();
+            String jsonString;
+            jsonString = EntityUtils.toString(entity, "UTF-8");
 
-			ObjectMapper mapper = new ObjectMapper();
-			JsonNode rootNode = mapper.readTree(jsonString);			
-			
-			JsonNode node = rootNode.get("error");
-		    if (node != null)
-		    {
-		    	throw new BitPayException("Error: " + jsonString);
-		    }
-		    
-			node = rootNode.get("errors");
-		    if (node != null)
-		    {
-		    	String message = "Multiple errors:";
-		    	if (node.isArray()) {
-		    	    for (final JsonNode errorNode : node) {
-		    	    	message += "\n" + errorNode.asText();
-		    	    }
-	                throw new BitPayException(message);
-		    	}
-		    }
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode rootNode = mapper.readTree(jsonString);
 
-			return jsonString;
-			
-		} catch (ParseException e) {
-			throw new BitPayException("Error - failed to retrieve HTTP response body : " + e.getMessage());
-		} catch (JsonMappingException e) {
-			throw new BitPayException("Error - failed to parse json response to map : " + e.getMessage());
-		} catch (IOException e) {
-			throw new BitPayException("Error - failed to retrieve HTTP response body : " + e.getMessage());
-		}
-	}
+            JsonNode node = rootNode.get("error");
+            if (node != null) {
+                throw new BitPayException("Error: " + jsonString);
+            }
 
-	private String getGuid() 
-	{
-		int Min = 0;
-		int Max = 99999999;
-		return Min + (int)(Math.random() * ((Max - Min) + 1)) + "";
-	}
+            node = rootNode.get("errors");
+            if (node != null) {
+                String message = "Multiple errors:";
+                if (node.isArray()) {
+                    for (final JsonNode errorNode : node) {
+                        message += "\n" + errorNode.asText();
+                    }
+                    throw new BitPayException(message);
+                }
+            }
+
+            return jsonString;
+
+        } catch (ParseException e) {
+            throw new BitPayException("Error - failed to retrieve HTTP response body : " + e.getMessage());
+        } catch (JsonMappingException e) {
+            throw new BitPayException("Error - failed to parse json response to map : " + e.getMessage());
+        } catch (IOException e) {
+            throw new BitPayException("Error - failed to retrieve HTTP response body : " + e.getMessage());
+        }
+    }
+
+    private String getGuid() {
+        int Min = 0;
+        int Max = 99999999;
+        return Min + (int) (Math.random() * ((Max - Min) + 1)) + "";
+    }
 
     public Token newToken(String facade) {
         Token token = new Token();
@@ -487,7 +481,9 @@ public class BitPay {
     }
 
     public static class Wrapper<D> {
-        public Wrapper() { }
+        public Wrapper() {
+        }
+
         @JsonProperty("data")
         public D data;
         @JsonProperty("facade")
@@ -495,21 +491,32 @@ public class BitPay {
     }
 
     public static class TokenWrapper extends Wrapper<Token[]> {
-        public TokenWrapper() { super(); }
+        public TokenWrapper() {
+            super();
+        }
     }
 
     public static class InvoiceWrapper extends Wrapper<Invoice> {
-        public InvoiceWrapper() { super(); }
+        public InvoiceWrapper() {
+            super();
+        }
     }
+
     public static class InvoicesWrapper extends Wrapper<List<Invoice>> {
-        public InvoicesWrapper() { super(); }
+        public InvoicesWrapper() {
+            super();
+        }
     }
 
     public static class TokenCacheWrapper extends Wrapper<Hashtable<String, String>[]> {
-        public TokenCacheWrapper() { super(); }
+        public TokenCacheWrapper() {
+            super();
+        }
     }
 
     public static class RatesWrapper extends Wrapper<Rate[]> {
-        public RatesWrapper() { super(); }
+        public RatesWrapper() {
+            super();
+        }
     }
 }

@@ -1,11 +1,13 @@
 package com.bitpay.sdk.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Stores the exchange rate for a given currency.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Rate {
 	
 	private String _name;

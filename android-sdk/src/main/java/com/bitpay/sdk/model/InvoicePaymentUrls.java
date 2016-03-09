@@ -4,11 +4,13 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Describes BIPs
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class InvoicePaymentUrls implements Parcelable {
 
 	private String bip21 = "";
