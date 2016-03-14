@@ -1,6 +1,7 @@
 package com.bitpay.sdk.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -9,6 +10,7 @@ import java.util.List;
 /**
  * A token is used to access the BitPay API and authorize access to a facade to a private key.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Token {
 	
 	private String _guid;

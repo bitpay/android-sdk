@@ -4,11 +4,13 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * Stores information about when (in which transaction in the blockchain was an invoice paid,
  * partially or totally.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonAutoDetect(fieldVisibility=JsonAutoDetect.Visibility.ANY)
 public class InvoiceTransaction implements Parcelable {
 
