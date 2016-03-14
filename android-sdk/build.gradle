@@ -62,12 +62,12 @@ uploadArchives {
             name 'BitPay Android SDK'
             packaging 'aar'
             description 'An SDK to develop applications that use the BitPay API'
-            url 'https://github.com/eordano/bitpay-android-sdk'
+            url 'https://github.com/bitpay/android-sdk'
 
             scm {
-                url 'scm:git@github.com:eordano/bitpay-android-sdk.git'
-                connection 'scm:git@github.com:eordano/bitpay-android-sdk.git'
-                developerConnection 'scm:git@github.com:eordano/bitpay-android-sdk.git'
+                url 'scm:git@github.com:bitpay/android-sdk.git'
+                connection 'scm:git@github.com:bitpay/android-sdk.git'
+                developerConnection 'scm:git@github.com:bitpay/android-sdk.git'
             }
 
             licenses {
