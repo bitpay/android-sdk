@@ -53,19 +53,19 @@ $ gpg --version
 
 Here is sample output from my machine:
 
-> gpg (GnuPG) 1.4.19
-> Copyright (C) 2015 Free Software Foundation, Inc.
-> License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
-> This is free software: you are free to change and redistribute it.
-> There is NO WARRANTY, to the extent permitted by law.
->
-> Home: ~/.gnupg
-> Supported algorithms:
-> Pubkey: RSA, RSA-E, RSA-S, ELG-E, DSA
-> Cipher: IDEA, 3DES, CAST5, BLOWFISH, AES, AES192, AES256, TWOFISH,
->         CAMELLIA128, CAMELLIA192, CAMELLIA256
-> Hash: MD5, SHA1, RIPEMD160, SHA256, SHA384, SHA512, SHA224
-> Compression: Uncompressed, ZIP, ZLIB, BZIP2
+> gpg (GnuPG) 1.4.19<br>
+> Copyright (C) 2015 Free Software Foundation, Inc.<br>
+> License GPLv3+: GNU GPL version 3 or later [http://gnu.org/licenses/gpl.html](http://gnu.org/licenses/gpl.html)<br>
+> This is free software: you are free to change and redistribute it.<br>
+> There is NO WARRANTY, to the extent permitted by law.<br>
+><br>
+> Home: ~/.gnupg<br>
+> Supported algorithms:<br>
+> Pubkey: RSA, RSA-E, RSA-S, ELG-E, DSA<br>
+> Cipher: IDEA, 3DES, CAST5, BLOWFISH, AES, AES192, AES256, TWOFISH,<br>
+>         CAMELLIA128, CAMELLIA192, CAMELLIA256<br>
+> Hash: MD5, SHA1, RIPEMD160, SHA256, SHA384, SHA512, SHA224<br>
+> Compression: Uncompressed, ZIP, ZLIB, BZIP2<br>
 
 Getting GnuPG for Mac:
 
@@ -99,9 +99,9 @@ $ gpg --list-keys
 
 You should get output that looks similar to:
 
-> pub   2048R/EF6BDB7F 2015-03-23
-> uid                  Chris Kleeschulte <chrisk@bitpay.com>
-> sub   2048R/CE81F194 2015-03-23
+> pub   2048R/EF6BDB7F 2015-03-23<br>
+> uid   Chris Kleeschulte<br>
+> sub   2048R/CE81F194 2015-03-23<br>
 
 The keyId in the example above is "EF6BDB7F" above. Yours will be different, but in the same position.
 
@@ -111,11 +111,11 @@ Background first. You will be doing three major steps. First, creating a propert
 
 1. Edit "gradle.properties" located in the root of the android-sdk project. Add the following keys:
 
-> sonatypeUsername=bitpay
-> sonatypePassword=<some password>
-> signing.keyId=<your key id>
-> signing.password=<your password>
-> signing.secretKeyRingFile=/Users/<your username>/.gnupg/secring.gpg
+> sonatypeUsername=bitpay<br>
+> sonatypePassword=some password<br>
+> signing.keyId=your key id<br>
+> signing.password=your password<br>
+> signing.secretKeyRingFile=/Users/yourusername/.gnupg/secring.gpg<br>
 
 As for the "sonatypePassword", if you don't know it, [Reset it here](https://issues.sonatype.org/secure/ForgotLoginDetails.jspa). The username is bitpay. The password should come to "integrations@bitpay.com" so if you have access to this email box, then you can reset this.
 
@@ -129,41 +129,41 @@ $ sh gradlew android-sdk:uploadArchives
 
 the output should resemble this:
 
-> :android-sdk:preBuild UP-TO-DATE
-> :android-sdk:preReleaseBuild UP-TO-DATE
-> :android-sdk:compileReleaseNdk UP-TO-DATE
-> :android-sdk:compileLint
-> :android-sdk:copyReleaseLint UP-TO-DATE
-> :android-sdk:mergeReleaseProguardFiles UP-TO-DATE
-> :android-sdk:packageReleaseRenderscript UP-TO-DATE
-> :android-sdk:checkReleaseManifest
-> :android-sdk:prepareReleaseDependencies
-> :android-sdk:compileReleaseRenderscript UP-TO-DATE
-> :android-sdk:generateReleaseResValues UP-TO-DATE
-> :android-sdk:generateReleaseResources UP-TO-DATE
-> :android-sdk:packageReleaseResources UP-TO-DATE
-> :android-sdk:compileReleaseAidl UP-TO-DATE
-> :android-sdk:generateReleaseBuildConfig UP-TO-DATE
-> :android-sdk:generateReleaseAssets UP-TO-DATE
-> :android-sdk:mergeReleaseAssets UP-TO-DATE
-> :android-sdk:processReleaseManifest UP-TO-DATE
-> :android-sdk:processReleaseResources UP-TO-DATE
-> :android-sdk:generateReleaseSources UP-TO-DATE
-> :android-sdk:compileReleaseJavaWithJavac UP-TO-DATE
-> :android-sdk:processReleaseJavaRes UP-TO-DATE
-> :android-sdk:transformResourcesWithMergeJavaResForRelease UP-TO-DATE
-> :android-sdk:transformClassesAndResourcesWithSyncLibJarsForRelease UP-TO-DATE
-> :android-sdk:mergeReleaseJniLibFolders UP-TO-DATE
-> :android-sdk:transformNative_libsWithMergeJniLibsForRelease UP-TO-DATE
-> :android-sdk:transformNative_libsWithSyncJniLibsForRelease UP-TO-DATE
-> :android-sdk:bundleRelease UP-TO-DATE
-> :android-sdk:signArchives UP-TO-DATE
-> :android-sdk:uploadArchives
-> Could not find metadata com.bitpay:android-sdk/maven-metadata.xml in remote (https://oss.sonatype.org/service/local/staging/deploy/maven2/)
->
-> BUILD SUCCESSFUL
->
-> Total time: 10.066 secs
+> :android-sdk:preBuild UP-TO-DATE<br>
+> :android-sdk:preReleaseBuild UP-TO-DATE<br>
+> :android-sdk:compileReleaseNdk UP-TO-DATE<br>
+> :android-sdk:compileLint<br>
+> :android-sdk:copyReleaseLint UP-TO-DATE<br>
+> :android-sdk:mergeReleaseProguardFiles UP-TO-DATE<br>
+> :android-sdk:packageReleaseRenderscript UP-TO-DATE<br>
+> :android-sdk:checkReleaseManifest<br>
+> :android-sdk:prepareReleaseDependencies<br>
+> :android-sdk:compileReleaseRenderscript UP-TO-DATE<br>
+> :android-sdk:generateReleaseResValues UP-TO-DATE<br>
+> :android-sdk:generateReleaseResources UP-TO-DATE<br>
+> :android-sdk:packageReleaseResources UP-TO-DATE<br>
+> :android-sdk:compileReleaseAidl UP-TO-DATE<br>
+> :android-sdk:generateReleaseBuildConfig UP-TO-DATE<br>
+> :android-sdk:generateReleaseAssets UP-TO-DATE<br>
+> :android-sdk:mergeReleaseAssets UP-TO-DATE<br>
+> :android-sdk:processReleaseManifest UP-TO-DATE<br>
+> :android-sdk:processReleaseResources UP-TO-DATE<br>
+> :android-sdk:generateReleaseSources UP-TO-DATE<br>
+> :android-sdk:compileReleaseJavaWithJavac UP-TO-DATE<br>
+> :android-sdk:processReleaseJavaRes UP-TO-DATE<br>
+> :android-sdk:transformResourcesWithMergeJavaResForRelease UP-TO-DATE<br>
+> :android-sdk:transformClassesAndResourcesWithSyncLibJarsForRelease UP-TO-DATE<br>
+> :android-sdk:mergeReleaseJniLibFolders UP-TO-DATE<br>
+> :android-sdk:transformNative_libsWithMergeJniLibsForRelease UP-TO-DATE<br>
+> :android-sdk:transformNative_libsWithSyncJniLibsForRelease UP-TO-DATE<br>
+> :android-sdk:bundleRelease UP-TO-DATE<br>
+> :android-sdk:signArchives UP-TO-DATE<br>
+> :android-sdk:uploadArchives<br>
+> Could not find metadata com.bitpay:android-sdk/maven-metadata.xml in remote<br> (https://oss.sonatype.org/service/local/staging/deploy/maven2/)<br>
+><br>
+> BUILD SUCCESSFUL<br>
+><br>
+> Total time: 10.066 secs<br>
 
 The key here is seeing: android-sdk:uploadArchives without errors. If all that goes ok, then proceed. If not, you may not have permission to login to oss.sonatype (400-level errors) or maybe your gpg key password is wrong or the path to the secret key is off.
 
